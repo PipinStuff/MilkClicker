@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MilkClicker.ViewModels"
+             xmlns:models="clr-namespace:MilkClicker.Models"
+             x:Class="MilkClicker.Views.MainPage"
+             x:DataType="viewmodels:MainViewModel"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="10" Padding="0,20,0,20">
+            <Label Text="Milk Clicker"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{DynamicResource Primary}"/>
+
+            <Label Text="{Binding TotalPoints, StringFormat='{0:F0} Milk Points'}"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{DynamicResource PrimaryText}"/>
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+                <Label Text="{Binding PointsPerClick, StringFormat='Per Click: {0:F1}'}"
+                       FontSize="14"
+                       TextColor="{DynamicResource SecondaryText}"/>
+                <Label Text="{Binding PointsPerSecond, StringFormat='Per Second: {0:F1}'}"
+                       FontSize="14"
+                       TextColor="{DynamicResource SecondaryText}"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1">
+            <Button Text="🥛"
+                    FontSize="120"
+                    BackgroundColor="{DynamicResource CardBackground}"
+                    BorderColor="{DynamicResource Primary}"
+                    BorderWidth="3"
+                    CornerRadius="100"
+                    HeightRequest="200"
+                    WidthRequest="200"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Scale="{Binding ClickAnimationScale}"
+                    Command="{Binding ClickMilkCommand}"/>
+        </Grid>
+
+        <ScrollView Grid.Row="2" MaximumHeightRequest="300">
+            <VerticalStackLayout Spacing="10" Padding="0,20,0,0">
+                <Label Text="Upgrades"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource Primary}"/>
+
+                <CollectionView ItemsSource="{Binding AvailableUpgrades}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Upgrade">
+                            <Frame Padding="15"
+                                   Margin="0,5,0,5"
+                                   BackgroundColor="{DynamicResource CardBackground}"
+                                   BorderColor="{DynamicResource Primary}"
+                                   CornerRadius="10"
+                                   HasShadow="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=PurchaseUpgradeCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource PrimaryText}"/>
+                                        <Label Text="{Binding Description}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource SecondaryText}"/>
+                                        <Label Text="{Binding CurrentLevel, StringFormat='Level: {0}'}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource Primary}"/>
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="1"
+                                                        VerticalOptions="Center"
+                                                        Spacing="5">
+                                        <Label Text="{Binding Path=., Converter={StaticResource UpgradeCostConverter}}"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource Primary}"/>
+                                        <Label Text="{Binding Path=., Converter={StaticResource UpgradeEffectConverter}}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource SecondaryText}"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>
